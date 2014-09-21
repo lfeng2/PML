@@ -1,8 +1,5 @@
 ---
 title: 'Coursera PML Project: Writeup'
-author: "Me"
-date: "Friday, September 21, 2014"
-output: html_document
 ---
 
 This is an R Markdown document for Coursera PML Project: Writeup. 
@@ -11,13 +8,13 @@ This is an R Markdown document for Coursera PML Project: Writeup.
 
 Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible to collect a large amount of data about personal activity relatively inexpensively. These type of devices are part of the quantified self movement – a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it. In this project, your goal will be to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways. More information is available from the website here: http://groupware.les.inf.puc-rio.br/har (see the section on the Weight Lifting Exercise Dataset). 
 
-```{r}
-library(Hmisc)
-library(caret)
-library(randomForest)
+```{r message = FALSE}
+library(Hmisc) ; 
+library(caret); 
+library(randomForest); 
 library(foreach)
 library(doParallel)
-set.seed(2048)
+set.seed(123) 
 options(warn=-1)
 ```
 
@@ -61,7 +58,7 @@ ncol(testing)
 
 ### Check and remove predictors with zero variance
 
-```{r}
+```{r results = 'hide'}
 nzv <- nearZeroVar(training)
 nzv
 sapply(nzv, function(x) summary(training[x]))
@@ -84,7 +81,6 @@ Cross validation was achieved by splitting the training data into a test set and
 
 ```{r}
 # Set the seed to make the model reproducible
-set.seed(123)
 inTrain = createDataPartition(training$classe, p=0.6, list=FALSE)
 # 60% of the original training data will be used to train the model
 train <- training[inTrain,]
@@ -110,14 +106,17 @@ randomForest(x, y, ntree=ntree)
 
 ## Error reports for both training and test data
 
-```{r}
+```{r results = 'hide'}
 predictions1 <- predict(rf, newdata=train)
+```
+```{r}
 confusionMatrix(predictions1,train$classe)
-
-
+```
+```{r results = 'hide'}
 predictions2 <- predict(rf, newdata=test)
+```
+```{r}
 confusionMatrix(predictions2,test$classe)
-
 ```
 
 ## Conclusion
